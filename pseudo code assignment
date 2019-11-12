@@ -1,0 +1,109 @@
+# Bouffard, Nichole Pseudo code assignment
+# Experiment name: Retrieval Boundaries
+# Aim 1: Compare the effect of context changes during encoding vs. retreival 
+# Aim 2: Examine how retrieval goals modulate the affect of boundaries on retroactive temporal order and duration judgments
+
+# Overview: Participants will complete alternating encoding and retrieval blocks. During encoding blocks, participants will see images of objects that are either paired with faces or scenes. For each trial participants will see both an object and another image side by side on the screen and will be asked to rate how vividly the can imagine the two interacting. Some of the objects will be colored red and some will be colored blue. Context boundaries will be created by repeating a sequence of blue objects (2-4 objects) and then switching to red objects. Another context boundary will be created by a switch in what the object is paired with (ie a series of faces followed by a switch to a series of scenes would denote a context change). After a block of encoding, participants will complete a block of retrieval. During the retrieval block, there will be two types of trials. First participants will recieve a cue. The cue will be a grey scale image of one of the objects that they saw during encoding. They will be asked one of two questions: either what the original color of the object was or which image the object was paired with (scene or face). After responding, the participant will be asked two questions (in counterbalanced order). For the first questions, the grey scale object will remain on the screen and a new grey scale object will appear. Participants must respond with 1. how close these two objects were to each other in the sequence (close or far)?  and 2. which object was seen first (left or right)? Participants will repeat these trials until all objects from the encoding block are seen. Participants will then begin another encoding block and will repeat this cycle until four encoding + retrieval blocks have been completed.
+
+# Pseudo code:
+clear all objects/variables
+
+Intiate directory
+Initiate stimulus folder directory
+	sub directories = faces, objects, scenes
+Initiate grey scale stimuli folder directory
+Initiate data output directory
+
+Initiate encoding block dataframe (rows are trials, columns are trial info)
+Initiate retrieval black dataframe (rows are trials, columns are trial info)
+
+Initiate prompt for subject number
+Display prompt for subject number
+Collect and store subject number in both E and R dataframes
+
+ENCODING BLOCK
+Initiate subject specifc stimuli pairs and sequences
+Build and store the sequence of stimuli pairs that will be presented to participants 
+	*Will probably write a function that will randomly draw images from the stimulus folders and have that function called here
+Sequence building function: Four sequences will be created for each participant. Each sequence will contain 32 trials (or pairs of stimuli). There will be 16 object + face pairs and 16 object + scene pairs. 
+
+Total stim:
+Objects: 128 objects (half red hue objects, half blue hue objects)
+Faces: 64 faces
+Scenes: 64 scenes
+
+Store all four sequences in a dataframe
+
+Create a dataframe with grey scale photos and the corresponding colored photo index (ie the grey scale object and the position in the sequence of that same, but colored object)
+	-search grey scale folder and find matching image title name 
+
+
+# Running the experiment
+Initiate master loop #loops through each of the four predetermined seuqences
+
+Initiate Encoding + Retrieval loops # loops through Encoding + Retrieval blocks four times
+
+Display Encoding task prompt
+Wait for key reponses
+If key resoponse, remove encoding task prompt and continue
+
+ENCODING BLOCK
+Initiate trial loop 1:length(sequenceN)
+Select first pair of stimuli (index from predetermined sequence)
+Store information about the stim:
+	-Store the hue of the object (red or blue) - indexed from predetermined sequence from above
+	-Store whether it is paired with a face or scene
+	-Store the boundary condition 
+		-this will be two quick if/then statements that states "
+		if the previous trial was face (or scene) and the current trial is a face (or scene) then boundaryFaceScene = no, 
+		else if boundaryFaceScene = yes,
+		if previous trial was red (or blue) object and current  is red (or blue) boundaryColor = no,
+		else if boundaryColor = yes"
+
+Trial start:
+	+ display fixation cross for 1.5 seconds (ITI)
+		+ collect trial onset time and trial #
+	+ select and display scene image and object image in center of screen
+		+ hold on screen for 4 seconds
+		+ remove images from screen
+	+ display visualization success question and response options for 1.5 seconds
+		+ "j" = yes, "k" = no
+		+ collect question onset time
+		+ start collecting responses 
+			if "j" then record "yes" and advance
+			if "k" then record "no" and advance
+			if "esc" then save and quit experiment
+	+ start back at beginning of loop
+
+end loop
+
+Display Retrieval task prompt
+Wait for key reponses
+If key resoponse, remove retrieval task prompt
+
+	RETRIEVAL BLOCK
+Initiate trial loop 1:length(greyscale object dataframe)
+	Trial start:
+	+ display fixation cross for 1.5 seconds (ITI)
+		+ collect trial onset time and trial #
+	+ Display boundary priming question and response options below (what color?/what was paired?) for 1.5 seconds
+		+ randomly select and display a grey scale object image in center of screen and 
+			+ start collecting responses 
+				if "j" then record "red" or "face" and advance
+				if "k" then record "blue" or "scene" and advance
+				if "esc" then save and quit experiment
+			+ remove image and question from screen
+	+ randomly select either distance or order question
+	+ display temporal question (distance or order) and response options for 1.5 seconds
+		+ Randomly select grey scale object using index for the colored object, take another grey scale object whose colored object had indices that were +2 or +4 (randomize this) away from the initially selected object
+		+ display the first grey scale object and the second grey scale object on the screen at the same time 
+		+ "j" = yes, "k" = no
+		+ collect question onset time
+		+ start collecting responses 
+			if "j" then record "yes"
+			if "k" then record "no"
+			if "esc" then save and quit experiment
+	+ start back at beginning of loop
+
+
+	write out the E and R dataframes to the outputdirectory with the subject # as the file name
